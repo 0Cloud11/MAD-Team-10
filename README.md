@@ -5,6 +5,8 @@ Login page < - > Sign up page <-> Home Screen <-> Program Listing <-> Profile/Se
 ## Week 1 Update
 Initial project setup completed.
 Wireframing and Figma Mock-up created
+
+
 <img width="400" height="789" alt="image" src="https://github.com/user-attachments/assets/6fc6db3e-1093-4824-8422-65ff4267c973" />
 <img width="410" height="782" alt="image" src="https://github.com/user-attachments/assets/da57ffa8-35a9-4b8d-8003-a626365ca655" />
 <img width="419" height="773" alt="image" src="https://github.com/user-attachments/assets/6807a543-116a-43b9-9f17-661aa39a7e7c" />

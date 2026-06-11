@@ -17,8 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   bool _keepSignedIn = false;
 
-  static const Color _hintColor = Color(0xFF6B5F5F);
-
   @override
   void dispose() {
     _loginController.dispose();
@@ -63,32 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  InputDecoration _inputDecoration({
-    required String hintText,
-    required Color fillColor,
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      hintText: hintText,
-      hintStyle: const TextStyle(
-        color: _hintColor,
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
-      ),
-      filled: true,
-      fillColor: fillColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
-      ),
-      suffixIcon: suffixIcon,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).primaryColor;
+    const hintColor = Color(0xFF5F5555);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -106,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -117,12 +93,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _loginController,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: _inputDecoration(
+                    decoration: InputDecoration(
+                      // FIX: Lowercase hints
                       hintText: 'username or email',
+                      hintStyle: const TextStyle(color: hintColor),
+                      filled: true,
                       fillColor: themeColor,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -133,18 +113,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _passwordController,
-                    textCapitalization: TextCapitalization.none,
-                    autocorrect: false,
                     obscureText: !_isPasswordVisible,
-                    decoration: _inputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'password',
+                      hintStyle: const TextStyle(color: hintColor),
+                      filled: true,
                       fillColor: themeColor,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: _hintColor,
+                          color: hintColor,
                         ),
                         onPressed: () {
                           setState(() {

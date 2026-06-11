@@ -24,8 +24,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final int _minPasswordLength = 8;
   final int _maxPasswordLength = 16;
 
-  static const Color _hintColor = Color(0xFF6B5F5F);
-
   @override
   void dispose() {
     _usernameController.dispose();
@@ -168,32 +166,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  InputDecoration _inputDecoration({
-    required String hintText,
-    required Color fillColor,
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      hintText: hintText,
-      hintStyle: const TextStyle(
-        color: _hintColor,
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
-      ),
-      filled: true,
-      fillColor: fillColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
-      ),
-      suffixIcon: suffixIcon,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).primaryColor;
+    const hintColor = Color(0xFF5F5555);
 
     return Scaffold(
       body: SafeArea(
@@ -224,11 +200,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _usernameController,
-                textCapitalization: TextCapitalization.none,
-                autocorrect: false,
-                decoration: _inputDecoration(
+                decoration: InputDecoration(
+                  // FIX: Lowercase hints
                   hintText: 'username',
+                  hintStyle: const TextStyle(color: hintColor),
+                  filled: true,
                   fillColor: themeColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -239,12 +220,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _emailController,
-                textCapitalization: TextCapitalization.none,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: _inputDecoration(
+                decoration: InputDecoration(
+                  // FIX: Lowercase hints
                   hintText: 'email',
+                  hintStyle: const TextStyle(color: hintColor),
+                  filled: true,
                   fillColor: themeColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -255,23 +240,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
-                textCapitalization: TextCapitalization.none,
-                autocorrect: false,
                 obscureText: !_isPasswordVisible,
                 onChanged: _checkPasswordStrength,
                 inputFormatters: [
                   FilteringTextInputFormatter.deny(RegExp(r'\s')),
                   LengthLimitingTextInputFormatter(_maxPasswordLength),
                 ],
-                decoration: _inputDecoration(
+                decoration: InputDecoration(
                   hintText: 'password',
+                  hintStyle: const TextStyle(color: hintColor),
+                  filled: true,
                   fillColor: themeColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _isPasswordVisible
                           ? Icons.visibility
                           : Icons.visibility_off,
-                      color: _hintColor,
+                      color: hintColor,
                     ),
                     onPressed: () {
                       setState(() {

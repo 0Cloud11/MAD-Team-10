@@ -11,28 +11,37 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
   bool _keepSignedIn = false;
 
+  static const Color _hintColor = Color(0xFF6B5F5F);
+
   @override
   void dispose() {
-    _emailController.dispose();
+    _loginController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _handleLogin() async {
-    final enteredEmail = _emailController.text.trim();
+    final enteredLogin = _loginController.text.trim();
     final enteredPassword = _passwordController.text;
 
     final user = await UserPrefs.getUser();
-    final savedEmail = user['email'] ?? '';
+    final savedUsername = (user['username'] ?? '').trim();
+    final savedEmail = (user['email'] ?? '').trim();
     final savedPassword = user['password'] ?? '';
 
-    if (enteredEmail == savedEmail && enteredPassword == savedPassword) {
+    final bool loginMatches =
+        enteredLogin.toLowerCase() == savedUsername.toLowerCase() ||
+        enteredLogin.toLowerCase() == savedEmail.toLowerCase();
+
+    final bool passwordMatches = enteredPassword == savedPassword;
+
+    if (loginMatches && passwordMatches) {
       await UserPrefs.setLoginState(
         isLoggedIn: true,
         keepSignedIn: _keepSignedIn,
@@ -47,17 +56,39 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Invalid email or password.'),
+          content: Text('Invalid username/email or password.'),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
 
+  InputDecoration _inputDecoration({
+    required String hintText,
+    required Color fillColor,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      hintText: hintText,
+      hintStyle: const TextStyle(
+        color: _hintColor,
+        fontSize: 15,
+        fontWeight: FontWeight.w400,
+      ),
+      filled: true,
+      fillColor: fillColor,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide.none,
+      ),
+      suffixIcon: suffixIcon,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).primaryColor;
-    const hintColor = Color(0xFF5F5555);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -75,26 +106,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.all(30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'EMAIL:',
+                    'USERNAME / EMAIL:',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'username / email',
-                      hintStyle: const TextStyle(color: hintColor),
-                      filled: true,
+                    controller: _loginController,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: _inputDecoration(
+                      hintText: 'username or email',
                       fillColor: themeColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -105,22 +133,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _passwordController,
+                    textCapitalization: TextCapitalization.none,
+                    autocorrect: false,
                     obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      hintStyle: const TextStyle(color: hintColor),
-                      filled: true,
+                    decoration: _inputDecoration(
+                      hintText: 'password',
                       fillColor: themeColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: hintColor,
+                          color: _hintColor,
                         ),
                         onPressed: () {
                           setState(() {
@@ -186,6 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Image.network(
                         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png',
                         height: 35,
+                        width: 35,
                         errorBuilder: (context, error, stackTrace) =>
                             const Icon(Icons.error),
                       ),

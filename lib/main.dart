@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/login_screen.dart';
+import 'screens/main_layout.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final bool keepSignedIn = prefs.getBool('keep_signed_in') ?? false;
+
+  runApp(MyApp(keepSignedIn: keepSignedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool keepSignedIn;
+
+  const MyApp({super.key, required this.keepSignedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        primaryColor: const Color(0xFFEFAAAA), // Pinkish theme from design
+        primaryColor: const Color(0xFFEFAAAA),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFEFAAAA)),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -27,7 +35,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: keepSignedIn ? const MainLayout() : const LoginScreen(),
     );
   }
 }

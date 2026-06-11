@@ -201,8 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextField(
                 controller: _usernameController,
                 decoration: InputDecoration(
-                  // FIX: Lowercase hints
-                  hintText: 'username',
+                  hintText: 'Username',
                   hintStyle: const TextStyle(color: hintColor),
                   filled: true,
                   fillColor: themeColor,
@@ -221,8 +220,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  // FIX: Lowercase hints
-                  hintText: 'email',
+                  hintText: 'Email',
                   hintStyle: const TextStyle(color: hintColor),
                   filled: true,
                   fillColor: themeColor,
@@ -247,7 +245,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   LengthLimitingTextInputFormatter(_maxPasswordLength),
                 ],
                 decoration: InputDecoration(
-                  hintText: 'password',
+                  hintText: 'Password',
                   hintStyle: const TextStyle(color: hintColor),
                   filled: true,
                   fillColor: themeColor,

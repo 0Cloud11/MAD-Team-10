@@ -78,7 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(30),
               child: const Text(
                 'Login',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Padding(
@@ -94,8 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextField(
                     controller: _loginController,
                     decoration: InputDecoration(
-                      // FIX: Lowercase hints
-                      hintText: 'username or email',
+                      hintText: 'Username/ Email',
                       hintStyle: const TextStyle(color: hintColor),
                       filled: true,
                       fillColor: themeColor,
@@ -115,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
-                      hintText: 'password',
+                      hintText: 'Password',
                       hintStyle: const TextStyle(color: hintColor),
                       filled: true,
                       fillColor: themeColor,

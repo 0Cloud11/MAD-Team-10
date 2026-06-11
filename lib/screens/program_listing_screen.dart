@@ -10,7 +10,6 @@ class ProgramListingScreen extends StatefulWidget {
 }
 
 class _ProgramListingScreenState extends State<ProgramListingScreen> {
-  // Future-adaptable: This list can be populated from an API later
   final List<Program> _allPrograms = [
     Program(
       id: '1',
@@ -73,19 +72,37 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
     });
   }
 
+  void _openProgramDetails(Program program) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ProgramDetailsScreen(),
+        settings: RouteSettings(arguments: program),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).primaryColor;
 
-    return SafeArea(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Program Listing',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: themeColor,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: Column(
         children: [
           Container(
             color: themeColor,
             padding: const EdgeInsets.all(20),
             width: double.infinity,
             child: const Text(
-              'HEY!\nHERE YOU CAN SEARCH ABOUT A PARTICULAR AI COURSE THAT YOU FIND AMUSING!',
+              'Browse available programs and view full details.',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -102,110 +119,60 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
               ),
             ),
           ),
           Expanded(
-            child: _filteredPrograms.isEmpty
-                ? const Center(child: Text('No programs found.'))
-                // Future-adaptable: ListView.builder is efficient for long API lists
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _filteredPrograms.length,
-                    itemBuilder: (context, index) {
-                      return _buildCourseCard(
-                        context,
-                        _filteredPrograms[index],
-                      );
-                    },
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: _filteredPrograms.length,
+              itemBuilder: (context, index) {
+                final program = _filteredPrograms[index];
+                return Card(
+                  color: themeColor,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          program.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Start Date: ${program.startDate}',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          program.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () => _openProgramDetails(program),
+                            child: const Text('View Details'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCourseCard(BuildContext context, Program program) {
-    return Card(
-      color: Theme.of(context).primaryColor,
-      margin: const EdgeInsets.only(bottom: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    program.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 18),
-                    Text(
-                      program.rating.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today,
-                  size: 14,
-                  color: Colors.black54,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'Starts: ${program.startDate}',
-                  style: const TextStyle(color: Colors.black87, fontSize: 13),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              program.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ProgramDetailsScreen(program: program),
-                    ),
-                  );
-                },
-                child: const Text('View Details'),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

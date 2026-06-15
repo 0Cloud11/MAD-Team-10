@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/program.dart';
-import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/main_layout.dart';
 import 'screens/program_details_screen.dart';
-import 'screens/program_listing_screen.dart';
 import 'screens/signup_screen.dart';
 
-// Global notifier for Dark/Light mode
 final ValueNotifier<ThemeMode> appThemeMode = ValueNotifier(ThemeMode.light);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final bool keepSignedIn = prefs.getBool('keep_signed_in') ?? false;
+  final bool isDarkMode = prefs.getBool('is_dark_mode') ?? false;
+
+  appThemeMode.value = isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   runApp(MyApp(keepSignedIn: keepSignedIn));
 }
@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
           title: 'Your App Name',
           debugShowCheckedModeBanner: false,
           themeMode: currentMode,
-          // LIGHT THEME
           theme: ThemeData(
             brightness: Brightness.light,
             scaffoldBackgroundColor: const Color(0xFFFFF7F2),
@@ -42,13 +41,15 @@ class MyApp extends StatelessWidget {
             colorScheme: const ColorScheme.light(
               primary: Color(0xFFFB923C),
               secondary: Color(0xFF1F1E2E),
-              surface: Color(0xFFFFF7F2),
+              surface: Color(0xFFFFFFFF),
+              onPrimary: Colors.white,
+              onSecondary: Colors.white,
+              onSurface: Color(0xFF1F2937),
             ),
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white,
               foregroundColor: Color(0xFF1F1E2E),
               elevation: 0,
-              centerTitle: false,
               titleTextStyle: TextStyle(
                 color: Color(0xFF1F2937),
                 fontSize: 22,
@@ -71,6 +72,17 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFFFB923C),
+                  width: 1.4,
+                ),
+              ),
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
@@ -93,23 +105,30 @@ class MyApp extends StatelessWidget {
               unselectedItemColor: Color(0xFFB6B1C8),
               type: BottomNavigationBarType.fixed,
             ),
+            dialogTheme: DialogThemeData(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
           ),
-          // DARK THEME
           darkTheme: ThemeData(
             brightness: Brightness.dark,
-            scaffoldBackgroundColor: const Color(0xFF121212),
+            scaffoldBackgroundColor: const Color(0xFF0F1115),
             primaryColor: const Color(0xFFFB923C),
-            cardColor: const Color(0xFF1F1E2E),
+            cardColor: const Color(0xFF1A1D24),
             colorScheme: const ColorScheme.dark(
               primary: Color(0xFFFB923C),
-              secondary: Color(0xFFFB923C),
-              surface: Color(0xFF121212),
+              secondary: Color(0xFFFFB067),
+              surface: Color(0xFF1A1D24),
+              onPrimary: Colors.white,
+              onSecondary: Colors.black,
+              onSurface: Color(0xFFF5F7FA),
             ),
             appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF1F1E2E),
+              backgroundColor: Color(0xFF161A22),
               foregroundColor: Colors.white,
               elevation: 0,
-              centerTitle: false,
               titleTextStyle: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
@@ -119,9 +138,9 @@ class MyApp extends StatelessWidget {
             ),
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
-              fillColor: const Color(0xFF2C2A3A),
+              fillColor: const Color(0xFF232833),
               hintStyle: const TextStyle(
-                color: Color(0xFFA09CAB),
+                color: Color(0xFFAAB2C0),
                 fontSize: 16,
               ),
               contentPadding: const EdgeInsets.symmetric(
@@ -132,6 +151,17 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFFFB923C),
+                  width: 1.4,
+                ),
+              ),
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
@@ -149,10 +179,16 @@ class MyApp extends StatelessWidget {
               ),
             ),
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-              backgroundColor: Color(0xFF000000),
+              backgroundColor: Color(0xFF161A22),
               selectedItemColor: Color(0xFFFB923C),
-              unselectedItemColor: Color(0xFFB6B1C8),
+              unselectedItemColor: Color(0xFF8C95A3),
               type: BottomNavigationBarType.fixed,
+            ),
+            dialogTheme: DialogThemeData(
+              backgroundColor: Color(0xFF1A1D24),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
             ),
           ),
           routes: {

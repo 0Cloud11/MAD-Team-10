@@ -27,6 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final enteredPassword = _passwordController.text;
 
     final user = await UserPrefs.getUser();
+    if (!mounted) return;
+
     final savedUsername = (user['username'] ?? '').trim();
     final savedEmail = (user['email'] ?? '').trim();
     final savedPassword = user['password'] ?? '';
@@ -42,9 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoggedIn: true,
         keepSignedIn: _keepSignedIn,
       );
-
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/main');
+
+      Navigator.of(context).pushReplacementNamed('/main');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -144,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 4),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.of(context).pushNamed('/signup');
                     },
                     child: Text(
                       'If you don\'t have an account, Sign Up',

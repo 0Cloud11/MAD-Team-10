@@ -40,7 +40,7 @@
 ## Week 2 Update
 
   # AI Course App Prototype
-    A fully functional UI prototype built with Flutter.
+  A fully functional UI prototype built with Flutter.
 
   ## Implemented Screens
   - Login Screen
@@ -206,4 +206,3 @@
     - flutter run
 
   ## Screenshots
-  

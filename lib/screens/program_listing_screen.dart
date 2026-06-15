@@ -79,20 +79,19 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
 
   Widget _buildBody(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final subTextColor = isDark ? Colors.white70 : const Color(0xFF4B5563);
 
     return Column(
       children: [
         Container(
           width: double.infinity,
-          color: const Color(0xFFFFFFFF),
+          color: Theme.of(context).cardColor,
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
-          child: const Text(
+          child: Text(
             'Browse programs, review summaries, and open full details for each opportunity.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Color(0xFF4B5563),
-              height: 1.4,
-            ),
+            style: TextStyle(fontSize: 14, color: subTextColor, height: 1.4),
           ),
         ),
         Padding(
@@ -107,10 +106,10 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
         ),
         Expanded(
           child: _filteredPrograms.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
                     'No programs found.',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: textColor),
                   ),
                 )
               : ListView.builder(
@@ -126,9 +125,13 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
                       elevation: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: const Color(0xFFF1D3BE)),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.transparent
+                                : const Color(0xFFF1D3BE),
+                          ),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(18),
@@ -137,10 +140,10 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
                             children: [
                               Text(
                                 program.title,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1F2937),
+                                  color: textColor,
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -154,9 +157,9 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
                                   const SizedBox(width: 6),
                                   Text(
                                     'Start Date: ${program.startDate}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 14,
-                                      color: Color(0xFF4B5563),
+                                      color: subTextColor,
                                     ),
                                   ),
                                 ],
@@ -166,9 +169,9 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
                                 program.description,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: Color(0xFF374151),
+                                  color: subTextColor,
                                   height: 1.4,
                                 ),
                               ),
@@ -200,7 +203,6 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
         body: _buildBody(context),
       );
     }
-
     return SafeArea(child: _buildBody(context));
   }
 }

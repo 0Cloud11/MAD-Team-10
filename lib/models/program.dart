@@ -19,7 +19,6 @@ class Program {
     required this.rating,
   });
 
-  // Future-adaptable for API integration
   factory Program.fromJson(Map<String, dynamic> json) {
     return Program(
       id: json['id'] ?? '',

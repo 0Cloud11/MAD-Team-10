@@ -9,6 +9,7 @@ class ProgramDetailsScreen extends StatelessWidget {
     final args = ModalRoute.of(context)?.settings.arguments;
     final Program program = args as Program;
     final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Program Details')),
@@ -21,19 +22,21 @@ class ProgramDetailsScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFF1D3BE)),
+                border: Border.all(
+                  color: isDark ? Colors.transparent : const Color(0xFFF1D3BE),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     program.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1F2937),
+                      color: isDark ? Colors.white : const Color(0xFF1F2937),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -43,9 +46,12 @@ class ProgramDetailsScreen extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         '${program.rating} Rating',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF1F2937),
                         ),
                       ),
                     ],
@@ -54,11 +60,27 @@ class ProgramDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            _buildSection(title: 'Description', value: program.description),
-            _buildSection(title: 'Start Date', value: program.startDate),
-            _buildSection(title: 'Schedule', value: program.schedule),
-            _buildSection(title: 'Eligibility', value: program.eligibility),
-            _buildSection(title: 'Instructor', value: program.instructor),
+            _buildSection(
+              context,
+              title: 'Description',
+              value: program.description,
+            ),
+            _buildSection(
+              context,
+              title: 'Start Date',
+              value: program.startDate,
+            ),
+            _buildSection(context, title: 'Schedule', value: program.schedule),
+            _buildSection(
+              context,
+              title: 'Eligibility',
+              value: program.eligibility,
+            ),
+            _buildSection(
+              context,
+              title: 'Instructor',
+              value: program.instructor,
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -77,33 +99,40 @@ class ProgramDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection({required String title, required String value}) {
+  Widget _buildSection(
+    BuildContext context, {
+    required String title,
+    required String value,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF1D3BE)),
+        border: Border.all(
+          color: isDark ? Colors.transparent : const Color(0xFFF1D3BE),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1F2937),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF4B5563),
+              color: isDark ? Colors.white70 : const Color(0xFF4B5563),
               height: 1.4,
             ),
           ),

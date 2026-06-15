@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../services/user_prefs.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback onNavigateToPrograms;
+
+  const HomeScreen({super.key, required this.onNavigateToPrograms});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,7 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final secondary = Theme.of(context).colorScheme.secondary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final welcomeBg = isDark
+        ? const Color(0xFF1F1E2E)
+        : const Color(0xFF1F1E2E);
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -40,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                color: secondary,
+                color: welcomeBg,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -65,9 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 18),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/program-listing');
-                    },
+                    onPressed:
+                        widget.onNavigateToPrograms, // Switch to Programs tab
                     icon: const Icon(Icons.arrow_forward_rounded),
                     label: const Text('Explore Programs'),
                     style: ElevatedButton.styleFrom(
@@ -80,71 +85,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Quick Access',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF1F2937),
+                color: textColor,
               ),
             ),
             const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildMenuCard(
-                    context,
-                    icon: Icons.school_rounded,
-                    title: 'Programs',
-                    subtitle: 'Browse available learning opportunities',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/program-listing');
-                    },
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: _buildMenuCard(
-                    context,
-                    icon: Icons.person_outline_rounded,
-                    title: 'Profile',
-                    subtitle: 'Review and edit your personal information',
-                    onTap: () {
-                      final scaffoldState = context
-                          .findAncestorStateOfType<ScaffoldState>();
-                      if (scaffoldState != null) {}
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Navigation Flow',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1F2937),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFF1D3BE)),
-              ),
-              child: const Text(
-                'Login → Home → Program Listing → Program Details\n\n'
-                'Use the Programs option from the bottom navigation bar or the Explore Programs button above to open the listing screen.',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Color(0xFF374151),
-                  height: 1.5,
-                ),
-              ),
+            _buildMenuCard(
+              context,
+              icon: Icons.school_rounded,
+              title: 'Programs',
+              subtitle: 'Browse available learning opportunities',
+              onTap: widget.onNavigateToPrograms, // Switch to Programs tab
             ),
           ],
         ),
@@ -160,16 +115,24 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onTap,
   }) {
     final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = Theme.of(context).cardColor;
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final subTextColor = isDark
+        ? const Color(0xFFA09CAB)
+        : const Color(0xFF6B7280);
+    final borderColor = isDark ? Colors.transparent : const Color(0xFFF1D3BE);
 
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: onTap,
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardBg,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFF1D3BE)),
+          border: Border.all(color: borderColor),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,20 +141,16 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 14),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF1F2937),
+                color: textColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: const TextStyle(
-                fontSize: 13,
-                color: Color(0xFF6B7280),
-                height: 1.4,
-              ),
+              style: TextStyle(fontSize: 13, color: subTextColor, height: 1.4),
             ),
           ],
         ),

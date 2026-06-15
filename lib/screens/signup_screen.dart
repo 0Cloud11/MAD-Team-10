@@ -139,13 +139,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buildSuggestionItem(String text, bool isValid) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
           isValid ? Icons.check_circle : Icons.radio_button_unchecked,
           size: 18,
-          color: isValid ? Colors.green : Colors.black45,
+          color: isValid
+              ? Colors.green
+              : (isDark ? Colors.white30 : Colors.black45),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -153,7 +156,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             text,
             style: TextStyle(
               fontSize: 12,
-              color: isValid ? Colors.green[700] : Colors.black54,
+              color: isValid
+                  ? Colors.green
+                  : (isDark ? Colors.white70 : Colors.black54),
               fontWeight: isValid ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
@@ -164,7 +169,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final secondary = Theme.of(context).colorScheme.secondary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final headerBg = isDark ? const Color(0xFF121212) : const Color(0xFF1F1E2E);
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
 
     return Scaffold(
       body: SafeArea(
@@ -178,7 +185,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: secondary,
+                  color: headerBg,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 alignment: Alignment.bottomLeft,
@@ -192,9 +199,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 28),
-              const Text(
+              Text(
                 'USERNAME:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -202,9 +209,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: const InputDecoration(hintText: 'Username'),
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'EMAIL:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -212,9 +219,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: const InputDecoration(hintText: 'Email'),
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'PASSWORD:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -232,7 +239,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _isPasswordVisible
                           ? Icons.visibility
                           : Icons.visibility_off,
-                      color: const Color(0xFF5F5555),
                     ),
                     onPressed: () {
                       setState(() {
@@ -247,7 +253,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 LinearProgressIndicator(
                   value: _passwordStrength,
                   minHeight: 6,
-                  backgroundColor: Colors.grey.shade300,
+                  backgroundColor: isDark
+                      ? Colors.white12
+                      : Colors.grey.shade300,
                   color: _strengthColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -264,18 +272,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
+                    color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFF1D3BE)),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.transparent
+                          : const Color(0xFFF1D3BE),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Password suggestions',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
+                          color: textColor,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -317,7 +330,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'If you have an account already, LOGIN',
                   style: TextStyle(
                     fontSize: 12,
-                    color: secondary,
+                    color: isDark
+                        ? Theme.of(context).primaryColor
+                        : const Color(0xFF1F1E2E),
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -326,6 +341,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed: _handleSignUp,
                 child: const Text('SIGN UP'),
+              ),
+              const SizedBox(height: 28),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/960px-Google_%22G%22_logo.svg.png',
+                    height: 34,
+                    width: 34,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.g_mobiledata,
+                      size: 40,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(width: 28),
+                  Icon(Icons.apple, size: 42, color: textColor),
+                ],
               ),
             ],
           ),

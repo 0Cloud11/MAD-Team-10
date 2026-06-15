@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/user_prefs.dart';
+import '../main.dart'; // Access global theme notifier
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,6 +14,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String email = 'user@example.com';
   String skillLevel = 'Beginner';
   String progress = '0% Completed';
+
+  // Notification states
+  bool pushEnabled = true;
+  bool emailEnabled = false;
 
   @override
   void initState() {
@@ -39,9 +44,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
+  void _showEditProfileDialog() {
+    final TextEditingController nameController = TextEditingController(
+      text: username,
+    );
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Edit Profile'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Username'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                setState(() => username = nameController.text);
+                await UserPrefs.saveUser(
+                  username: username,
+                  email: email,
+                  password:
+                      '', // Kept empty to not overwrite inadvertently without a full update
+                  skillLevel: skillLevel,
+                  progress: progress,
+                );
+                if (!ctx.mounted) return;
+                Navigator.pop(ctx);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showNotificationsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: const Text('Notifications'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SwitchListTile(
+                    title: const Text('Push Notifications'),
+                    value: pushEnabled,
+                    onChanged: (val) {
+                      setStateDialog(() => pushEnabled = val);
+                      setState(() => pushEnabled = val);
+                    },
+                  ),
+                  SwitchListTile(
+                    title: const Text('Email Notifications'),
+                    value: emailEnabled,
+                    onChanged: (val) {
+                      setStateDialog(() => emailEnabled = val);
+                      setState(() => emailEnabled = val);
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final iconColor = isDark ? Colors.white70 : const Color(0xFF4B5563);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -59,18 +149,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   Text(
                     username,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1F2937),
+                      color: textColor,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     email,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
-                      color: Color(0xFF6B7280),
+                      color: isDark ? Colors.white54 : const Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -93,39 +183,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.edit, color: Color(0xFF4B5563)),
-                    title: const Text('Edit Profile'),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Color(0xFF4B5563),
+                    leading: Icon(Icons.edit, color: iconColor),
+                    title: Text(
+                      'Edit Profile',
+                      style: TextStyle(color: textColor),
                     ),
+                    trailing: Icon(Icons.chevron_right, color: iconColor),
                     contentPadding: EdgeInsets.zero,
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Edit profile coming soon'),
-                        ),
-                      );
-                    },
+                    onTap: _showEditProfileDialog,
                   ),
                   const Divider(height: 1),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.notifications_outlined,
-                      color: Color(0xFF4B5563),
+                      color: iconColor,
                     ),
-                    title: const Text('Notifications'),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Color(0xFF4B5563),
+                    title: Text(
+                      'Notifications',
+                      style: TextStyle(color: textColor),
                     ),
+                    trailing: Icon(Icons.chevron_right, color: iconColor),
                     contentPadding: EdgeInsets.zero,
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Notifications settings coming soon'),
-                        ),
-                      );
+                    onTap: _showNotificationsDialog,
+                  ),
+                  const Divider(height: 1),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      'Dark Mode',
+                      style: TextStyle(color: textColor),
+                    ),
+                    secondary: Icon(Icons.dark_mode_outlined, color: iconColor),
+                    value: appThemeMode.value == ThemeMode.dark,
+                    onChanged: (isDarkMode) {
+                      setState(() {
+                        appThemeMode.value = isDarkMode
+                            ? ThemeMode.dark
+                            : ThemeMode.light;
+                      });
                     },
                   ),
                 ],
@@ -158,23 +253,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileSection({required String title, required Widget child}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = Theme.of(context).cardColor;
+    final borderColor = isDark ? Colors.transparent : const Color(0xFFF1D3BE);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBg,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF1D3BE)),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1F2937),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
           const SizedBox(height: 16),
@@ -185,19 +284,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildInfoRow(String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 15, color: Color(0xFF6B7280)),
+          style: TextStyle(
+            fontSize: 15,
+            color: isDark ? Colors.white54 : const Color(0xFF6B7280),
+          ),
         ),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1F2937),
+            color: isDark ? Colors.white : const Color(0xFF1F2937),
           ),
         ),
       ],

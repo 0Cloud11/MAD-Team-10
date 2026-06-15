@@ -15,35 +15,37 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   late int _currentIndex;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    ProgramListingScreen(),
-    ProfileScreen(),
-  ];
-
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
   }
 
+  void _switchTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final secondary = Theme.of(context).colorScheme.secondary;
+    final navBg = Theme.of(context).bottomNavigationBarTheme.backgroundColor;
+
+    final List<Widget> screens = [
+      HomeScreen(onNavigateToPrograms: () => _switchTab(1)),
+      const ProgramListingScreen(),
+      const ProfileScreen(),
+    ];
 
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: IndexedStack(index: _currentIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        backgroundColor: secondary,
+        backgroundColor: navBg,
         selectedItemColor: primary,
         unselectedItemColor: const Color(0xFFB6B1C8),
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: _switchTab,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),

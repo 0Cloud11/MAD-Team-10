@@ -60,7 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final secondary = Theme.of(context).colorScheme.secondary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // We keep the top header dark consistently or adapt it
+    final headerBg = isDark ? const Color(0xFF121212) : const Color(0xFF1F1E2E);
+    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -69,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               height: 280,
               width: double.infinity,
-              color: secondary,
+              color: headerBg,
               alignment: Alignment.bottomLeft,
               padding: const EdgeInsets.all(30),
               child: const Text(
@@ -86,9 +89,12 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'USERNAME / EMAIL:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -98,9 +104,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'PASSWORD:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -113,7 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           _isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: const Color(0xFF5F5555),
                         ),
                         onPressed: () {
                           setState(() {
@@ -135,10 +143,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         },
                       ),
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           'Keep me signed in',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontSize: 13, color: textColor),
                         ),
                       ),
                     ],
@@ -152,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       'If you don\'t have an account, Sign Up',
                       style: TextStyle(
                         fontSize: 12,
-                        color: secondary,
+                        color: isDark ? primary : const Color(0xFF1F1E2E),
                         decoration: TextDecoration.underline,
                       ),
                     ),
@@ -167,14 +175,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.network(
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png',
+                        'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/960px-Google_%22G%22_logo.svg.png',
                         height: 34,
                         width: 34,
+                        fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.error_outline),
+                            const Icon(
+                              Icons.g_mobiledata,
+                              size: 40,
+                              color: Colors.red,
+                            ),
                       ),
                       const SizedBox(width: 28),
-                      const Icon(Icons.apple, size: 42),
+                      Icon(Icons.apple, size: 42, color: textColor),
                     ],
                   ),
                 ],

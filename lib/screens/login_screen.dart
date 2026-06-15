@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/user_prefs.dart';
-import 'main_layout.dart';
-import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -46,11 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (!mounted) return;
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainLayout()),
-      );
+      Navigator.pushReplacementNamed(context, '/main');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -63,29 +57,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Theme.of(context).primaryColor;
-    const hintColor = Color(0xFF5F5555);
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
-              height: 300,
+              height: 280,
               width: double.infinity,
-              color: themeColor,
+              color: secondary,
               alignment: Alignment.bottomLeft,
               padding: const EdgeInsets.all(30),
               child: const Text(
                 'Login',
                 style: TextStyle(
+                  color: Colors.white,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.all(28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -96,15 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _loginController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Username/ Email',
-                      hintStyle: const TextStyle(color: hintColor),
-                      filled: true,
-                      fillColor: themeColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -118,19 +106,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
                       hintText: 'Password',
-                      hintStyle: const TextStyle(color: hintColor),
-                      filled: true,
-                      fillColor: themeColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: hintColor,
+                          color: const Color(0xFF5F5555),
                         ),
                         onPressed: () {
                           setState(() {
@@ -140,10 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Checkbox(
+                        activeColor: primary,
                         value: _keepSignedIn,
                         onChanged: (value) {
                           setState(() {
@@ -159,49 +141,38 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpScreen(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/signup');
                     },
-                    child: const Text(
+                    child: Text(
                       'If you don\'t have an account, Sign Up',
                       style: TextStyle(
                         fontSize: 12,
+                        color: secondary,
                         decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: _handleLogin,
-                      child: const Text(
-                        'LOGIN',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
+                  const SizedBox(height: 22),
+                  ElevatedButton(
+                    onPressed: _handleLogin,
+                    child: const Text('LOGIN'),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 28),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.network(
                         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png',
-                        height: 35,
-                        width: 35,
+                        height: 34,
+                        width: 34,
                         errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.error),
+                            const Icon(Icons.error_outline),
                       ),
-                      const SizedBox(width: 30),
-                      const Icon(Icons.apple, size: 45),
+                      const SizedBox(width: 28),
+                      const Icon(Icons.apple, size: 42),
                     ],
                   ),
                 ],

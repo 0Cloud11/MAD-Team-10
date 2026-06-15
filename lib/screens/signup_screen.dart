@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/user_prefs.dart';
-import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -136,10 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   Widget _buildSuggestionItem(String text, bool isValid) {
@@ -168,8 +164,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Theme.of(context).primaryColor;
-    const hintColor = Color(0xFF5F5555);
+    final secondary = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
       body: SafeArea(
@@ -183,13 +178,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: themeColor,
+                  color: secondary,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 alignment: Alignment.bottomLeft,
                 child: const Text(
                   'Sign Up',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 28),
@@ -200,16 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _usernameController,
-                decoration: InputDecoration(
-                  hintText: 'Username',
-                  hintStyle: const TextStyle(color: hintColor),
-                  filled: true,
-                  fillColor: themeColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                decoration: const InputDecoration(hintText: 'Username'),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -219,16 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                  hintStyle: const TextStyle(color: hintColor),
-                  filled: true,
-                  fillColor: themeColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                decoration: const InputDecoration(hintText: 'Email'),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -246,19 +227,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ],
                 decoration: InputDecoration(
                   hintText: 'Password',
-                  hintStyle: const TextStyle(color: hintColor),
-                  filled: true,
-                  fillColor: themeColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _isPasswordVisible
                           ? Icons.visibility
                           : Icons.visibility_off,
-                      color: hintColor,
+                      color: const Color(0xFF5F5555),
                     ),
                     onPressed: () {
                       setState(() {
@@ -290,9 +264,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF8F1F1),
+                    color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFD9B8B8)),
+                    border: Border.all(color: const Color(0xFFF1D3BE)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,22 +313,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 15),
               GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: const Text(
+                child: Text(
                   'If you have an account already, LOGIN',
                   style: TextStyle(
                     fontSize: 12,
+                    color: secondary,
                     decoration: TextDecoration.underline,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _handleSignUp,
-                  child: const Text('SIGN UP', style: TextStyle(fontSize: 18)),
-                ),
+              ElevatedButton(
+                onPressed: _handleSignUp,
+                child: const Text('SIGN UP'),
               ),
             ],
           ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/program.dart';
-import 'program_details_screen.dart';
 
 class ProgramListingScreen extends StatefulWidget {
-  const ProgramListingScreen({super.key});
+  final bool showAppBar;
+
+  const ProgramListingScreen({super.key, this.showAppBar = false});
 
   @override
   State<ProgramListingScreen> createState() => _ProgramListingScreenState();
@@ -73,107 +74,133 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
   }
 
   void _openProgramDetails(Program program) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ProgramDetailsScreen(),
-        settings: RouteSettings(arguments: program),
-      ),
+    Navigator.pushNamed(context, '/program-details', arguments: program);
+  }
+
+  Widget _buildBody(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          color: const Color(0xFFFFFFFF),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
+          child: const Text(
+            'Browse programs, review summaries, and open full details for each opportunity.',
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFF4B5563),
+              height: 1.4,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: TextField(
+            controller: _searchController,
+            decoration: const InputDecoration(
+              hintText: 'Search programs',
+              prefixIcon: Icon(Icons.search),
+            ),
+          ),
+        ),
+        Expanded(
+          child: _filteredPrograms.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No programs found.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: _filteredPrograms.length,
+                  itemBuilder: (context, index) {
+                    final program = _filteredPrograms[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      elevation: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: const Color(0xFFF1D3BE)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                program.title,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1F2937),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_month_rounded,
+                                    size: 18,
+                                    color: primary,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Start Date: ${program.startDate}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF4B5563),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                program.description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF374151),
+                                  height: 1.4,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => _openProgramDetails(program),
+                                child: const Text('View Details'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Theme.of(context).primaryColor;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Program Listing',
-          style: TextStyle(color: Colors.black),
+    if (widget.showAppBar) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Program Listing'),
+          automaticallyImplyLeading: true,
         ),
-        backgroundColor: themeColor,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Column(
-        children: [
-          Container(
-            color: themeColor,
-            padding: const EdgeInsets.all(20),
-            width: double.infinity,
-            child: const Text(
-              'Browse available programs and view full details.',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search programs...',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: themeColor.withValues(alpha: 0.3),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: _filteredPrograms.length,
-              itemBuilder: (context, index) {
-                final program = _filteredPrograms[index];
-                return Card(
-                  color: themeColor,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          program.title,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Start Date: ${program.startDate}',
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          program.description,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () => _openProgramDetails(program),
-                            child: const Text('View Details'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+        body: _buildBody(context),
+      );
+    }
+
+    return SafeArea(child: _buildBody(context));
   }
 }

@@ -1,61 +1,63 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import 'program_listing_screen.dart';
 import 'profile_screen.dart';
+import 'program_listing_screen.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({super.key});
+  final int initialIndex;
+
+  const MainLayout({super.key, this.initialIndex = 0});
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _currentIndex = 0;
+  late int _currentIndex;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const ProgramListingScreen(),
-    const ProfileScreen(),
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    ProgramListingScreen(),
+    ProfileScreen(),
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final themeColor = Theme.of(context).primaryColor;
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: Container(
-        color: themeColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.home,
-                  color: _currentIndex == 0 ? Colors.white : Colors.black,
-                ),
-                onPressed: () => setState(() => _currentIndex = 0),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: _currentIndex == 1 ? Colors.white : Colors.black,
-                ),
-                onPressed: () => setState(() => _currentIndex = 1),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.person,
-                  color: _currentIndex == 2 ? Colors.white : Colors.black,
-                ),
-                onPressed: () => setState(() => _currentIndex = 2),
-              ),
-            ],
+      body: IndexedStack(index: _currentIndex, children: _screens),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        backgroundColor: secondary,
+        selectedItemColor: primary,
+        unselectedItemColor: const Color(0xFFB6B1C8),
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school_rounded),
+            label: 'Programs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_rounded),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

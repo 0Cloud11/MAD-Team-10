@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../services/user_prefs.dart';
+import '../models/program.dart';
+import 'program_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final VoidCallback onNavigateToPrograms;
-
-  const HomeScreen({super.key, required this.onNavigateToPrograms});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -12,11 +12,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String username = 'Learner';
+  late Future<List<Program>> _featuredProgramsFuture;
 
   @override
   void initState() {
     super.initState();
     _loadUserName();
+    _featuredProgramsFuture = Program.fetchPrograms().then(
+      (list) => list.take(2).toList(),
+    );
   }
 
   Future<void> _loadUserName() async {
@@ -30,11 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final welcomeBg = isDark
-        ? const Color(0xFF1F1E2E)
-        : const Color(0xFF1F1E2E);
-    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final secondary = Theme.of(context).colorScheme.secondary;
+    final tertiary = Theme.of(context).colorScheme.tertiary;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -46,7 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                color: welcomeBg,
+                gradient: LinearGradient(
+                  colors: [secondary, tertiary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -69,37 +74,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  ElevatedButton.icon(
-                    onPressed:
-                        widget.onNavigateToPrograms, // Switch to Programs tab
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('Explore Programs'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primary,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(220, 48),
-                    ),
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              'Quick Access',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: textColor,
-              ),
+            // FIX: This text widget was previously mangled in your code
+            const Text(
+              'Featured AI Programs',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 14),
-            _buildMenuCard(
-              context,
-              icon: Icons.school_rounded,
-              title: 'Programs',
-              subtitle: 'Browse available learning opportunities',
-              onTap: widget.onNavigateToPrograms, // Switch to Programs tab
+            FutureBuilder<List<Program>>(
+              future: _featuredProgramsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.all(40.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Text('Failed to load featured programs.');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Text('No featured programs available.');
+                }
+
+                return Column(
+                  children: snapshot.data!
+                      .map((program) => _buildFeaturedCard(context, program))
+                      .toList(),
+                );
+              },
             ),
           ],
         ),
@@ -107,52 +111,62 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildFeaturedCard(BuildContext context, Program program) {
     final primary = Theme.of(context).colorScheme.primary;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = Theme.of(context).cardColor;
-    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
-    final subTextColor = isDark
-        ? const Color(0xFFA09CAB)
-        : const Color(0xFF6B7280);
-    final borderColor = isDark ? Colors.transparent : const Color(0xFFF1D3BE);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: borderColor),
+    return Card(
+      color: cardBg,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: isDark ? const Color(0xFF232833) : const Color(0xFFF1D3BE),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: primary, size: 28),
-            const SizedBox(height: 14),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                color: textColor,
+      ),
+      elevation: 0,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          Navigator.pushNamed(context, '/program-details', arguments: program);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.model_training, color: primary, size: 30),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: TextStyle(fontSize: 13, color: subTextColor, height: 1.4),
-            ),
-          ],
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      program.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      program.startDate,
+                      style: const TextStyle(fontSize: 13, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: primary),
+            ],
+          ),
         ),
       ),
     );

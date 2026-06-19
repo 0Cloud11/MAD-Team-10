@@ -14,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isPasswordVisible = false;
   bool _keepSignedIn = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -23,21 +24,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    final enteredLogin = _loginController.text.trim();
-    final enteredPassword = _passwordController.text;
+    if (_loginController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill all fields.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+    await Future.delayed(const Duration(seconds: 1)); // Simulate server delay
 
     final user = await UserPrefs.getUser();
-    if (!mounted) return;
-
     final savedUsername = (user['username'] ?? '').trim();
     final savedEmail = (user['email'] ?? '').trim();
     final savedPassword = user['password'] ?? '';
 
     final bool loginMatches =
-        enteredLogin.toLowerCase() == savedUsername.toLowerCase() ||
-        enteredLogin.toLowerCase() == savedEmail.toLowerCase();
+        _loginController.text.trim().toLowerCase() ==
+            savedUsername.toLowerCase() ||
+        _loginController.text.trim().toLowerCase() == savedEmail.toLowerCase();
+    final bool passwordMatches = _passwordController.text == savedPassword;
 
-    final bool passwordMatches = enteredPassword == savedPassword;
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+    });
 
     if (loginMatches && passwordMatches) {
       await UserPrefs.setLoginState(
@@ -45,8 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
         keepSignedIn: _keepSignedIn,
       );
       if (!mounted) return;
-
-      Navigator.of(context).pushReplacementNamed('/main');
+      Navigator.pushReplacementNamed(context, '/main');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -60,10 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // We keep the top header dark consistently or adapt it
-    final headerBg = isDark ? const Color(0xFF121212) : const Color(0xFF1F1E2E);
-    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final secondary = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -72,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               height: 280,
               width: double.infinity,
-              color: headerBg,
+              color: secondary,
               alignment: Alignment.bottomLeft,
               padding: const EdgeInsets.all(30),
               child: const Text(
@@ -89,12 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'USERNAME / EMAIL:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -104,12 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
+                  const Text(
                     'PASSWORD:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -122,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
+                          color: Colors.grey,
                         ),
                         onPressed: () {
                           setState(() {
@@ -137,58 +145,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       Checkbox(
                         activeColor: primary,
                         value: _keepSignedIn,
-                        onChanged: (value) {
-                          setState(() {
-                            _keepSignedIn = value ?? false;
-                          });
-                        },
+                        onChanged: (value) =>
+                            setState(() => _keepSignedIn = value ?? false),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'Keep me signed in',
-                          style: TextStyle(fontSize: 13, color: textColor),
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/signup');
-                    },
+                    onTap: () => Navigator.pushNamed(context, '/signup'),
                     child: Text(
                       'If you don\'t have an account, Sign Up',
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark ? primary : const Color(0xFF1F1E2E),
+                        color: primary,
                         decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
                   const SizedBox(height: 22),
                   ElevatedButton(
-                    onPressed: _handleLogin,
-                    child: const Text('LOGIN'),
-                  ),
-                  const SizedBox(height: 28),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.network(
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/960px-Google_%22G%22_logo.svg.png',
-                        height: 34,
-                        width: 34,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(
-                              Icons.g_mobiledata,
-                              size: 40,
-                              color: Colors.red,
+                    onPressed: _isLoading ? null : _handleLogin,
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
                             ),
-                      ),
-                      const SizedBox(width: 28),
-                      Icon(Icons.apple, size: 42, color: textColor),
-                    ],
+                          )
+                        : const Text('LOGIN'),
                   ),
                 ],
               ),

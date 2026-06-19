@@ -15,6 +15,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
   String _password = '';
   double _passwordStrength = 0;
   String _strengthLabel = '';
@@ -38,7 +39,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool get _hasSpecialChar =>
       RegExp(r'[!@#\$&*~%^()_\-+=<>?/{}[\]|.,]').hasMatch(_password);
   bool get _hasNoSpaces => !RegExp(r'\s').hasMatch(_password);
-
   bool get _isPasswordAcceptable =>
       _hasMinLength &&
       _hasUppercase &&
@@ -50,14 +50,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _checkPasswordStrength(String value) {
     setState(() {
       _password = value;
-
       if (value.isEmpty) {
         _passwordStrength = 0;
         _strengthLabel = '';
         _strengthColor = Colors.transparent;
         return;
       }
-
       int score = 0;
       if (_hasMinLength) score++;
       if (_hasUppercase && _hasLowercase) score++;
@@ -86,37 +84,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (username.isEmpty) {
+    if (username.isEmpty ||
+        email.isEmpty ||
+        !email.contains('@') ||
+        !_isPasswordAcceptable) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter a username.'),
+          content: Text('Please correct the errors before signing up.'),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
 
-    if (email.isEmpty || !email.contains('@')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid email.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    if (!_isPasswordAcceptable) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Password must be $_minPasswordLength-$_maxPasswordLength characters, include uppercase, lowercase, number, special character, and no spaces.',
-          ),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+    setState(() {
+      _isLoading = true;
+    });
+    await Future.delayed(
+      const Duration(seconds: 1),
+    ); // Simulate server processing
 
     await UserPrefs.saveUser(
       username: username,
@@ -127,6 +113,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -134,21 +123,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: Colors.green,
       ),
     );
-
     Navigator.pushReplacementNamed(context, '/login');
   }
 
   Widget _buildSuggestionItem(String text, bool isValid) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
           isValid ? Icons.check_circle : Icons.radio_button_unchecked,
           size: 18,
-          color: isValid
-              ? Colors.green
-              : (isDark ? Colors.white30 : Colors.black45),
+          color: isValid ? Colors.green : Colors.grey,
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -156,9 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             text,
             style: TextStyle(
               fontSize: 12,
-              color: isValid
-                  ? Colors.green
-                  : (isDark ? Colors.white70 : Colors.black54),
+              color: isValid ? Colors.green : Colors.grey,
               fontWeight: isValid ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
@@ -169,9 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final headerBg = isDark ? const Color(0xFF121212) : const Color(0xFF1F1E2E);
-    final textColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final secondary = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
       body: SafeArea(
@@ -185,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: headerBg,
+                  color: secondary,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 alignment: Alignment.bottomLeft,
@@ -199,9 +180,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 28),
-              Text(
+              const Text(
                 'USERNAME:',
-                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -209,9 +190,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: const InputDecoration(hintText: 'Username'),
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'EMAIL:',
-                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -219,9 +200,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: const InputDecoration(hintText: 'Email'),
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'PASSWORD:',
-                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -239,12 +220,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _isPasswordVisible
                           ? Icons.visibility
                           : Icons.visibility_off,
+                      color: Colors.grey,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
+                    onPressed: () => setState(
+                      () => _isPasswordVisible = !_isPasswordVisible,
+                    ),
                   ),
                 ),
               ),
@@ -253,11 +233,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 LinearProgressIndicator(
                   value: _passwordStrength,
                   minHeight: 6,
-                  backgroundColor: isDark
-                      ? Colors.white12
-                      : Colors.grey.shade300,
+                  backgroundColor: Colors.grey.shade300,
                   color: _strengthColor,
-                  borderRadius: BorderRadius.circular(10),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -269,26 +246,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: isDark
-                          ? Colors.transparent
-                          : const Color(0xFFF1D3BE),
+                      color: Colors.grey.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Password suggestions',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: textColor,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -330,36 +303,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'If you have an account already, LOGIN',
                   style: TextStyle(
                     fontSize: 12,
-                    color: isDark
-                        ? Theme.of(context).primaryColor
-                        : const Color(0xFF1F1E2E),
+                    color: secondary,
                     decoration: TextDecoration.underline,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _handleSignUp,
-                child: const Text('SIGN UP'),
-              ),
-              const SizedBox(height: 28),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.network(
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/960px-Google_%22G%22_logo.svg.png',
-                    height: 34,
-                    width: 34,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
-                      Icons.g_mobiledata,
-                      size: 40,
-                      color: Colors.red,
-                    ),
-                  ),
-                  const SizedBox(width: 28),
-                  Icon(Icons.apple, size: 42, color: textColor),
-                ],
+                onPressed: _isLoading ? null : _handleSignUp,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(color: Colors.white),
+                      )
+                    : const Text('SIGN UP'),
               ),
             ],
           ),

@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       valueListenable: appThemeMode,
       builder: (context, currentMode, child) {
         return MaterialApp(
-          title: 'Your App Name',
+          title: 'Blank',
           debugShowCheckedModeBanner: false,
           themeMode: currentMode,
           theme: ThemeData(
@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
             colorScheme: const ColorScheme.light(
               primary: Color(0xFFFB923C),
               secondary: Color(0xFF1F1E2E),
+              tertiary: Color(0xFF06B6D4), // Opposite color wheel accent
               surface: Color(0xFFFFFFFF),
               onPrimary: Colors.white,
               onSecondary: Colors.white,
@@ -66,13 +67,9 @@ class MyApp extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 14,
+                vertical: 16,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
@@ -80,7 +77,14 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
                   color: Color(0xFFFB923C),
-                  width: 1.4,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.5,
                 ),
               ),
             ),
@@ -88,14 +92,14 @@ class MyApp extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFB923C),
                 foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 54),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 textStyle: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -120,6 +124,7 @@ class MyApp extends StatelessWidget {
             colorScheme: const ColorScheme.dark(
               primary: Color(0xFFFB923C),
               secondary: Color(0xFFFFB067),
+              tertiary: Color(0xFF06B6D4), // Opposite color wheel accent
               surface: Color(0xFF1A1D24),
               onPrimary: Colors.white,
               onSecondary: Colors.black,
@@ -145,13 +150,9 @@ class MyApp extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 14,
+                vertical: 16,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
@@ -159,7 +160,14 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
                   color: Color(0xFFFB923C),
-                  width: 1.4,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.5,
                 ),
               ),
             ),
@@ -167,14 +175,14 @@ class MyApp extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFB923C),
                 foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 54),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 textStyle: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -185,7 +193,7 @@ class MyApp extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
             ),
             dialogTheme: DialogThemeData(
-              backgroundColor: Color(0xFF1A1D24),
+              backgroundColor: const Color(0xFF1A1D24),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),

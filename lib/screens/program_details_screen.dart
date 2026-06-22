@@ -1,8 +1,148 @@
 import 'package:flutter/material.dart';
 import '../models/program.dart';
 
-class ProgramDetailsScreen extends StatelessWidget {
+class ProgramDetailsScreen extends StatefulWidget {
   const ProgramDetailsScreen({super.key});
+
+  @override
+  State<ProgramDetailsScreen> createState() => _ProgramDetailsScreenState();
+}
+
+class _ProgramDetailsScreenState extends State<ProgramDetailsScreen> {
+  void _showRegistrationDialog(BuildContext context, Program program) {
+    final formKey = GlobalKey<FormState>();
+    final reasonController = TextEditingController();
+    bool isSubmitting = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Dialog(
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 24,
+              ),
+              child: Container(
+                width: 500,
+                padding: const EdgeInsets.all(24),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Register for Program',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'You are registering for ${program.title}. Please provide a brief reason for joining.',
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        const Text(
+                          'Why do you want to join?',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: reasonController,
+                          maxLines: 3,
+                          decoration: const InputDecoration(
+                            hintText: 'Enter your reason...',
+                          ),
+                          validator: (value) =>
+                              value == null || value.trim().isEmpty
+                              ? 'Reason is required to register'
+                              : null,
+                        ),
+                        const SizedBox(height: 30),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: isSubmitting
+                                    ? null
+                                    : () => Navigator.pop(dialogContext),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text('Cancel'),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: isSubmitting
+                                    ? null
+                                    : () async {
+                                        if (!formKey.currentState!.validate())
+                                          return;
+
+                                        setDialogState(() {
+                                          isSubmitting = true;
+                                        });
+                                        await Future.delayed(
+                                          const Duration(seconds: 2),
+                                        ); // Simulate API Post
+
+                                        if (!dialogContext.mounted) return;
+                                        Navigator.pop(
+                                          dialogContext,
+                                        ); // Close dialog
+
+                                        ScaffoldMessenger.of(
+                                          this.context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Successfully registered for ${program.title}!',
+                                            ),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      },
+                                child: isSubmitting
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text('Confirm'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +165,9 @@ class ProgramDetailsScreen extends StatelessWidget {
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: isDark ? Colors.transparent : const Color(0xFFF1D3BE),
+                  color: isDark
+                      ? const Color(0xFF232833)
+                      : const Color(0xFFF1D3BE),
                 ),
               ),
               child: Column(
@@ -33,10 +175,9 @@ class ProgramDetailsScreen extends StatelessWidget {
                 children: [
                   Text(
                     program.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -46,12 +187,9 @@ class ProgramDetailsScreen extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         '${program.rating} Rating',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? Colors.white
-                              : const Color(0xFF1F2937),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -81,18 +219,12 @@ class ProgramDetailsScreen extends StatelessWidget {
               title: 'Instructor',
               value: program.instructor,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Registered for ${program.title}'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('Register Now'),
+              onPressed: () => _showRegistrationDialog(context, program),
+              child: const Text('Enroll Now'),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -105,6 +237,7 @@ class ProgramDetailsScreen extends StatelessWidget {
     required String value,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 14),
@@ -113,7 +246,7 @@ class ProgramDetailsScreen extends StatelessWidget {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isDark ? Colors.transparent : const Color(0xFFF1D3BE),
+          color: isDark ? const Color(0xFF232833) : const Color(0xFFF1D3BE),
         ),
       ),
       child: Column(
@@ -121,21 +254,10 @@ class ProgramDetailsScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
-            ),
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              color: isDark ? Colors.white70 : const Color(0xFF4B5563),
-              height: 1.4,
-            ),
-          ),
+          Text(value, style: const TextStyle(fontSize: 14, height: 1.4)),
         ],
       ),
     );

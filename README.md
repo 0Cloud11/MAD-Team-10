@@ -183,3 +183,9 @@
   - **Form & GlobalKey<FormState>**: For grouping input fields and triggering collective validation/reset functions.
   - **DropdownButtonFormField**: For providing constrained, selectable input categories.
   - **showDialog & StatefulBuilder**: For rendering modular, interactive popup overlays that manage their own internal state.
+  
+  ## Screenshots
+
+  <img width="364" height="495" alt="image" src="https://github.com/user-attachments/assets/4cf5acd9-dab8-41fe-8ef6-43df24dc092d" />
+
+  <img width="357" height="485" alt="image" src="https://github.com/user-attachments/assets/6c94f19d-83e6-484b-b81b-792cc89323a6" />

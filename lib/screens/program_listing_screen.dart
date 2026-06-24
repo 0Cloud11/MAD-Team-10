@@ -45,10 +45,10 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
         _filteredPrograms = data;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = "Failed to load programs. Please check your connection.";
+        _error = 'Failed to load programs. Please try again.';
         _isLoading = false;
       });
     }
@@ -69,142 +69,158 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+    final brandOrange = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDark
+        ? const Color(0xFF2D3340)
+        : const Color(0xFFF1D3BE);
 
     return Column(
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+          child: Row(
+            children: const [
+              Icon(Icons.auto_awesome_rounded, color: Color(0xFFFB923C)),
+              SizedBox(width: 8),
+              Text(
+                'Excelerate Programs',
+                style: TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFFE84D7A),
+                ),
+              ),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(20),
           child: TextField(
             controller: _searchController,
             decoration: const InputDecoration(
-              hintText: 'Search programs',
-              prefixIcon: Icon(Icons.search),
+              hintText: 'search programs',
+              prefixIcon: Icon(Icons.search_rounded),
             ),
           ),
         ),
-        Expanded(child: _buildListContent(primary)),
-      ],
-    );
-  }
-
-  Widget _buildListContent(Color primary) {
-    if (_isLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
-            Text(
-              'Fetching programs...',
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 60,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                _error!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(onPressed: _fetchData, child: const Text('Retry')),
-            ],
-          ),
-        ),
-      );
-    }
-
-    if (_filteredPrograms.isEmpty) {
-      return const Center(
-        child: Text('No programs found.', style: TextStyle(fontSize: 16)),
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: _fetchData,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: _filteredPrograms.length,
-        itemBuilder: (context, index) {
-          final program = _filteredPrograms[index];
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 18),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
-            elevation: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: isDark
-                      ? const Color(0xFF232833)
-                      : const Color(0xFFF1D3BE),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      program.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
+        Expanded(
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: Color(0xFFFB923C)),
+                )
+              : _error != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.calendar_month_rounded,
-                          size: 18,
-                          color: primary,
+                        const Icon(
+                          Icons.error_outline_rounded,
+                          size: 60,
+                          color: Colors.red,
                         ),
-                        const SizedBox(width: 6),
-                        Text('Start Date: ${program.startDate}'),
+                        const SizedBox(height: 14),
+                        Text(
+                          _error!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: _fetchData,
+                          child: const Text('Retry'),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      program.description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(height: 1.4),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => _openProgramDetails(program),
-                      child: const Text('View Details'),
-                    ),
-                  ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _fetchData,
+                  color: brandOrange,
+                  child: _filteredPrograms.isEmpty
+                      ? ListView(
+                          children: const [
+                            SizedBox(height: 140),
+                            Center(
+                              child: Text(
+                                'No programs found.',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          itemCount: _filteredPrograms.length,
+                          itemBuilder: (context, index) {
+                            final program = _filteredPrograms[index];
+
+                            return Card(
+                              color: Theme.of(context).cardColor,
+                              margin: const EdgeInsets.only(bottom: 18),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                side: BorderSide(color: borderColor),
+                              ),
+                              elevation: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(18),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      program.title,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_month_rounded,
+                                          size: 18,
+                                          color: brandOrange,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(
+                                            'Start Date: ${program.startDate}',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      program.description,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          _openProgramDetails(program),
+                                      child: const Text('View Details'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                 ),
-              ),
-            ),
-          );
-        },
-      ),
+        ),
+      ],
     );
   }
 
@@ -216,6 +232,7 @@ class _ProgramListingScreenState extends State<ProgramListingScreen> {
         body: _buildBody(context),
       );
     }
+
     return SafeArea(child: _buildBody(context));
   }
 }

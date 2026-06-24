@@ -1,29 +1,52 @@
+## Project Overview
+  Excelerate is a Flutter-based learner support app designed to help students explore AI-related programs, discover essential skill-building opportunities, and interact with structured learning content in a clean and accessible way.
+
 ## Project Objective
-  This project is an app for students, where they can find courses on AI tools or essential skills, and can also find news on these AI models.
+  This project aims to deliver a complete Excelerate App with key learner-facing screens, smooth navigation, consistent branding, integrated mock data, and working forms for user interaction and feedback.
 
 ## Project Vision
-  Clean and Slick UI that is still easy to navigate and use for anyone.
+  A clean, polished, and intuitive app experience that remains easy to navigate while presenting a professional and consistent brand identity.
+
+## Core Features
+  Login and Sign Up flow
+  Home dashboard
+  Program Listing
+  Program Details
+  Feedback / Form interaction
+  Profile and session management
+  Splash screen and branded UI
+  Mock API / JSON-style data integration
+  Loading, validation, and error handling
 
 ## Navigation flow
-  Login page < - > Sign up page <-> Home Screen <-> Program Listing <-> Program Details <-> Profile/Settings
+  Splash Screen -> Login page <-> Sign up page <-> Home Screen <-> Program Listing <-> Program Details <-> Feedback Form <-> Profile/Settings
 
 ## Links
   Here are the links to Documents (Google Docs), Wireframes(Figma), and our Repository (GitHub):-
 
   Documents (Google Docs):-
 
-  Team Charter:		https://docs.google.com/document/d/1lLF50O7wYWmP6jm1J4IVdEzwUwkKl7glbSfSo-8WfNg/edit?usp=sharing
+  Team Charter:   [https://docs.google.com/document/d/1lLF50O7wYWmP6jm1J4IVdEzwUwkKl7glbSfSo-8WfNg/edit?usp=sharing](https://docs.google.com/document/d/1lLF50O7wYWmP6jm1J4IVdEzwUwkKl7glbSfSo-8WfNg/edit?usp=sharing)
 
-  App Proposal:		https://docs.google.com/document/d/1GflEMeTm0yuZW-8igsAJZOc7CTsPdgmG88C7VsFxF2I/edit?usp=sharing
+  App Proposal:   [https://docs.google.com/document/d/1GflEMeTm0yuZW-8igsAJZOc7CTsPdgmG88C7VsFxF2I/edit?usp=sharing](https://docs.google.com/document/d/1GflEMeTm0yuZW-8igsAJZOc7CTsPdgmG88C7VsFxF2I/edit?usp=sharing)
 
-  Wireframes(Figma):	https://www.figma.com/design/HYcJIbpcJ9kRh3RT8ktdcw/MAD_Team10_Wireframs?node-id=2-3&t=zQYRFB0t0V9swEaL-1
+  Wireframes(Figma):  [https://www.figma.com/design/HYcJIbpcJ9kRh3RT8ktdcw/MAD_Team10_Wireframs?node-id=2-3&t=zQYRFB0t0V9swEaL-1](https://www.figma.com/design/HYcJIbpcJ9kRh3RT8ktdcw/MAD_Team10_Wireframs?node-id=2-3&t=zQYRFB0t0V9swEaL-1)
 
-  Repository (GitHub):	https://github.com/0Cloud11/MAD-Team-10
+  Repository (GitHub):  [https://github.com/0Cloud11/MAD-Team-10](https://github.com/0Cloud11/MAD-Team-10)
 
+## Setup Instructions
+  Clone the repository from GitHub.
+  Open the project in VS Code or Android Studio.
+  Ensure Flutter SDK is installed correctly.
+  Run the following commands:
+
+  `flutter pub get`
+
+  `flutter run`
 
 ## Week 1 Update
   Initial project setup completed.
-  Wireframing and Figma Mock-up created
+  Wireframing and Figma Mock-up created.
 
   ## Screenshots
 
@@ -37,87 +60,100 @@
 
   <img width="419" height="773" alt="image" src="https://github.com/user-attachments/assets/6807a543-116a-43b9-9f17-661aa39a7e7c" />
 
-
 ## Week 2 Update
 
   # AI Course App Prototype
-  A fully functional UI prototype built with Flutter.
+  A functional Flutter UI prototype was developed to establish the foundation of the Excelerate learner experience.
 
   ## Implemented Screens
   - **Login Screen**
-    - Authenticates users by matching entered username or email and password against locally stored data.
-    - Features a show/hide password toggle for improved usability.
-    - Supports persistent sessions with a "Keep me signed in" checkbox using local storage.
+    - Authenticates users by matching entered username or email and password against locally stored user data.
+    - Includes a show/hide password toggle for improved usability.
+    - Supports persistent sessions through a “Keep me signed in” option using local storage.
 
   - **Sign Up Screen**
-    - Captures new user details (username, email, and password).
-    - Enforces strict password policies (length limits, casing, numeric, special characters, and no spaces).
-    - Provides real-time feedback with a dynamic password strength indicator and actionable suggestions.
-    - Persists new user records locally and seamlessly redirects to the Login screen upon success.
+    - Captures username, email, and password for new users.
+    - Enforces password rules such as minimum and maximum length, uppercase and lowercase letters, numeric values, special characters, and no spaces.
+    - Displays a live password strength indicator and helpful improvement suggestions.
+    - Saves the user record locally and redirects the learner back to the Login screen after successful registration.
 
   - **Home Screen**
-    - Serves as the primary learner dashboard post-login.
-    - Greets users with a branded, dynamic welcome banner.
-    - Facilitates quick navigation to the Program Listing screen.
-    - Clearly outlines the application's primary navigation flow for learners.
+    - Serves as the main learner dashboard after login.
+    - Displays a branded welcome section.
+    - Provides direct navigation to the Program Listing screen.
+    - Supports a simple, clear learner journey through the app.
 
   - **Program Listing Screen**
-    - Organizes available learning opportunities in a clean, scrollable card-based layout.
-    - Integrates a search function, allowing users to filter programs quickly.
-    - Implements dynamic rendering logic, ensuring the screen is prepared for future API-fetched collections.
-    - Routes users to the Program Details screen upon selecting a specific program card.
+    - Displays available programs in a clean card-based layout.
+    - Includes search functionality to help users find relevant programs quickly.
+    - Uses rendering logic that is adaptable for future API-fetched program collections.
+    - Opens the Program Details screen when a program is selected.
 
   - **Program Details Screen**
-    - Presents comprehensive details for the selected program (title, description, start date, schedule, eligibility, instructor, and rating).
-    - Dynamically retrieves data via route arguments.
-    - Features a placeholder registration action button for future enrollment flows.
+    - Displays detailed information for the selected program, including title, description, date, schedule, eligibility, instructor, and rating.
+    - Dynamically receives program data through route arguments.
+    - Includes a registration action flow for future expansion.
 
   - **Profile Screen**
-    - Retrieves and displays locally stored learner profile data.
-    - Provides functionality for profile editing.
-    - Manages secure logout by clearing the active session state.
+    - Displays locally stored learner profile information.
+    - Supports profile editing functionality.
+    - Supports logout and clears the current login session state.
 
   ## Navigation Logic
-  - Employs Flutter’s robust navigation system to handle transitions between screens.
-  - Utilizes named routes configured in `MaterialApp` for scalable navigation management.
-  - Passes complex data (Program objects) dynamically between screens using route arguments.
-  - Core learner flow: `Login → Home → Program Listing → Program Details → Back to Program Listing`.
-  - Integrates a global bottom navigation bar for immediate access to Home, Programs, and Profile sections.
+  - Flutter navigation was implemented to handle movement across screens.
+  - Named routes were configured in `MaterialApp` for scalability and maintainability.
+  - Program data is passed dynamically between listing and detail views using route arguments.
+  - Core learner flow:
+    - Login -> Home
+    - Home -> Program Listing
+    - Program Listing -> Program Details
+    - Program Details -> Back to Program Listing
+  - A bottom navigation bar was added for quick access to Home, Programs, and Profile sections.
 
   ## Theming and Branding
-  - Centralizes styling via a global `ThemeData` configuration in `main.dart`.
-  - Maintains brand consistency by applying specific primary and secondary color schemes.
-  - Unifies UI components using shared styling for inputs (`InputDecorationTheme`), buttons (`ElevatedButtonThemeData`), app bars (`AppBarTheme`), and bottom navigation (`BottomNavigationBarThemeData`).
+  - A global `ThemeData` configuration was applied in `main.dart`.
+  - Shared visual styles were defined for text fields, buttons, app bars, and bottom navigation.
+  - Primary and secondary colors were used consistently across major screens.
 
   ## Data Handling and Persistence
-  - Uses `SharedPreferences` to manage lightweight, persistent local data across app sessions.
-  - Locally stores user profiles, credentials, skill levels, progress, and session states.
-  - Isolates storage logic into a dedicated service file (`user_prefs.dart`) to separate business logic from the UI.
+  - `SharedPreferences` was used for lightweight local persistence.
+  - User-related data stored locally includes:
+    - Username
+    - Email
+    - Password
+    - Skill level
+    - Progress
+    - Login state
+    - Keep-signed-in preference
+  - A dedicated service file was used to separate persistence logic from UI code.
 
   ## Program Data Structure
-  - Encapsulates program data within a dedicated `Program` model.
-  - Supports structured object creation, JSON serialization, and deserialization.
-  - Ensures the application architecture is fully prepared for backend API integration with minimal refactoring.
+  - Program data was represented using a dedicated `Program` model.
+  - The model supports:
+    - Structured object creation
+    - JSON serialization
+    - JSON deserialization
+  - This structure prepared the application for later backend or API integration.
 
   ## Important Flutter Concepts Used
-  - **MaterialApp & ThemeData**: Root configuration and global design system management.
-  - **Navigator & Routes**: Transition handling and parameter passing via `ModalRoute.of(context).settings.arguments`.
-  - **StatefulWidget**: Management of dynamic UI states across core screens.
-  - **TextEditingController**: Input capture and validation.
-  - **SharedPreferences**: Local data persistence.
-  - **ListView.builder**: Efficient, lazy-loaded rendering of dynamic lists.
-  - **InputFormatters**: Real-time input restriction (e.g., denying spaces in passwords).
+  - **MaterialApp & ThemeData** for root-level app setup and global styling.
+  - **Navigator & Routes** for screen-to-screen transitions.
+  - **StatefulWidget** for screens with dynamic state changes.
+  - **TextEditingController** for input handling.
+  - **SharedPreferences** for persistent local storage.
+  - **ListView.builder** for efficient list rendering.
+  - **InputFormatters** for restricting password inputs.
 
   ## Future Extension Readiness
-  - Program views are built to seamlessly transition from hardcoded sample data to API-driven JSON payloads.
-  - The `Program` model inherently supports JSON mapping.
-  - Data passing between screens handles full objects, aligning with standard backend content consumption.
-  - Local storage can be cleanly swapped for REST APIs, Firebase Auth, or cloud databases.
+  - Program screens were designed so hardcoded UI content could later be replaced by API or JSON data.
+  - The `Program` model already supports JSON mapping.
+  - The storage layer can later be extended with REST APIs, Firebase Authentication, or cloud-based databases.
 
   ## How to Run
-  - Ensure Flutter is correctly installed on your machine.
-  - Run `flutter pub get` to fetch dependencies.
-  - Run `flutter run` to launch the application.
+  - Ensure Flutter is installed correctly on your machine.
+  - Run:
+    - `flutter pub get`
+    - `flutter run`
 
   ## Screenshots
 
@@ -137,56 +173,149 @@
 
   <img width="347" height="493" alt="image" src="https://github.com/user-attachments/assets/2547d884-1149-423b-9ee8-4281327fae32" />
 
-
 ## Week 3 Update
 
   # Dynamic State, Mock APIs, and Interactive Forms
-  Week 3 transitions the application from a static visual prototype to an interactive, responsive product by introducing asynchronous data fetching, state management, complex form validation, and dynamic UI feedback.
+  Week 3 focused on transforming the app from a mostly visual prototype into a more functional and interactive product by integrating mock data, asynchronous loading, validation, and feedback mechanisms.
 
   ## Key Features Implemented
 
   ### 1. Mock API Integration & Asynchronous Data Fetching
-  - Implemented a simulated asynchronous API call (`Program.fetchPrograms()`) inside the `Program` model to mimic backend network requests.
-  - Added artificial network latency (`Future.delayed`) to test and observe UI behavior during data retrieval.
-  - Updated the **Home Screen** and **Program Listing Screen** to fetch their program collections asynchronously rather than relying on static, instantly available lists.
+  - A simulated asynchronous API call, `Program.fetchPrograms()`, was implemented inside the `Program` model.
+  - Artificial delay using `Future.delayed` was introduced to simulate network loading and allow proper testing of loading states.
+  - The **Home Screen** and **Program Listing Screen** were updated to fetch program data dynamically instead of relying purely on static display content.
 
   ### 2. State Management & Loading Indicators
-  - Migrated screens to effectively manage three core states: `Loading`, `Loaded/Success`, and `Error`.
-  - Integrated `FutureBuilder` on the Home screen to automatically manage state transitions and render UI based on the `snapshot` connection state.
-  - Implemented `setState` logic on the Program Listing screen with boolean flags (`_isLoading`) to display a `CircularProgressIndicator` while data is being fetched.
-  - Ensured the UI never feels frozen or unresponsive during data retrieval.
+  - Screens were updated to support `Loading`, `Success`, and `Error` states.
+  - `FutureBuilder` was used on the Home screen to rebuild the UI according to asynchronous data states.
+  - `setState` and boolean flags such as `_isLoading` were used on the Program Listing screen to control fetch and display states.
+  - `CircularProgressIndicator` was added to improve user feedback during loading.
 
   ### 3. Error Handling and Defensive UI
-  - Added robust `try-catch` blocks around asynchronous operations to prevent app crashes on failed network requests.
-  - Designed dynamic Error States: If the mock API fails, the UI replaces the loading spinner with a clear error message and a functional "Retry" button, allowing users to re-attempt the fetch without restarting the app.
+  - `try-catch` handling was added around asynchronous program fetch operations.
+  - If mock data loading fails, the UI displays an error message and a retry action instead of failing silently.
 
   ### 4. Interactive Feedback Form
-  - Created a brand new **Feedback Screen** accessible via the bottom navigation bar.
-  - Implemented a complex `Form` utilizing a `GlobalKey<FormState>` to manage validation.
-  - Integrated various input widgets including `TextFormField` (for name, email, and multiline comments) and `DropdownButtonFormField` (for selecting feedback categories).
-  - **Validation Logic**: Added regex-based email validation and ensured required fields cannot be submitted empty.
-  - **Submission State**: Connected the submit button to a mock asynchronous post request. While submitting, the button displays an internal loading spinner. Upon success, the form dynamically clears itself and triggers a green success `SnackBar`.
+  - A new **Feedback Screen** was introduced.
+  - A `Form` with `GlobalKey<FormState>` was used for structured validation.
+  - `TextFormField` and `DropdownButtonFormField` were added for name, email, feedback category, and comments.
+  - Required field validation and email validation were implemented.
+  - Submission shows a loading state and success feedback through a `SnackBar`.
 
   ### 5. Program Registration Flow
-  - Replaced the static "Enroll Now" button on the **Program Details Screen** with an interactive registration flow.
-  - Implemented a dynamic `showDialog` popup containing a registration form.
-  - The dialog captures user intent ("Reason for joining") with field validation, manages its own asynchronous loading state during submission, and dismisses itself upon a simulated successful API post.
+  - The Program Details experience was improved by replacing a static action with an interactive registration flow.
+  - A dialog-based registration form was introduced.
+  - Validation and submission feedback were added to create a more realistic user interaction flow.
 
   ### 6. Dark Theme Refinement
-  - Enhanced the global `ThemeData` to support a cohesive Dark Mode.
-  - Implemented a complementary color strategy by introducing a Teal/Cyan (`#06B6D4`) tertiary accent color for dark surfaces, providing high-contrast visual hierarchy opposite the brand's primary Orange (`#FB923C`).
+  - The global theme was extended to support a more polished dark mode.
+  - Dark surfaces, input fields, navigation elements, and accent styling were refined to better match the app’s brand identity.
 
   ## Important Flutter Widgets and Concepts Used
-  - **FutureBuilder**: For listening to asynchronous events and building UI reactively based on snapshot states.
-  - **CircularProgressIndicator**: For visual user feedback during network latency.
-  - **RefreshIndicator**: Added to lists to allow users to manually re-fetch data.
-  - **Form & GlobalKey<FormState>**: For grouping input fields and triggering collective validation/reset functions.
-  - **DropdownButtonFormField**: For providing constrained, selectable input categories.
-  - **showDialog & StatefulBuilder**: For rendering modular, interactive popup overlays that manage their own internal state.
-  
+  - **FutureBuilder**
+  - **CircularProgressIndicator**
+  - **RefreshIndicator**
+  - **Form & GlobalKey<FormState>**
+  - **DropdownButtonFormField**
+  - **showDialog & StatefulBuilder**
+
   ## Screenshots
 
   <img width="364" height="495" alt="image" src="https://github.com/user-attachments/assets/4cf5acd9-dab8-41fe-8ef6-43df24dc092d" />
 
   <img width="357" height="485" alt="image" src="https://github.com/user-attachments/assets/6c94f19d-83e6-484b-b81b-792cc89323a6" />
-  
+
+## Week 4 Update
+
+  # Final UI Refinement, Branding, and Presentation Readiness
+  Week 4 focused on polishing the final app for submission and presentation by refining the overall UI/UX, improving branding consistency, and preparing the codebase and documentation as a stronger portfolio-ready project.
+
+  ## Key Improvements Completed
+
+  ### 1. Consistent Excelerate Branding
+  - Applied a more unified Excelerate visual identity across the app.
+  - Standardized the use of branded colors across buttons, app sections, cards, highlights, and navigation elements.
+  - Improved text hierarchy and screen headers so the UI feels more polished and consistent.
+
+  ### 2. Splash Screen Added
+  - Added a dedicated **Splash Screen** for the Excelerate app.
+  - The splash screen improves first impression and strengthens branding before the user enters the authentication or main app flow.
+  - The splash flow routes users appropriately into login or the main experience.
+
+  ### 3. UI/UX Refinement
+  - Refined layout spacing, card styling, and section presentation across major screens.
+  - Improved consistency between Login, Sign Up, Home, Program Listing, Program Details, Feedback, and Profile screens.
+  - Preserved all previously working features while improving clarity and visual quality.
+
+  ### 4. Validation and Navigation Review
+  - Rechecked form validation flows to ensure they remain functional and understandable.
+  - Preserved smooth navigation between major learner journeys:
+    - Splash -> Login / Main
+    - Login -> Home
+    - Home -> Program Listing
+    - Program Listing -> Program Details
+    - Program Details -> Registration
+    - Main navigation -> Feedback / Profile
+  - Ensured the app structure remains intuitive and presentation-ready.
+
+  ### 5. Documentation and Submission Readiness
+  - README content was polished and expanded for final GitHub submission.
+  - Setup instructions, project overview, weekly progress, screenshots, and changelog-style updates were organized more clearly.
+  - The repository is now better structured as both an internship deliverable and a portfolio piece.
+
+## Final App Summary
+  The final Excelerate App includes:
+  - Login Screen
+  - Sign Up Screen
+  - Splash Screen
+  - Home Screen
+  - Program Listing Screen
+  - Program Details Screen
+  - Feedback Form
+  - Profile Screen
+  - Mock API / JSON-style dynamic program data
+  - Validation, loading indicators, and error handling
+  - Consistent branding and dark theme support
+
+## Contribution / Changelog Summary
+  Week 1:
+  - Project setup completed
+  - Wireframes and initial app planning completed
+
+  Week 2:
+  - Core learner screens built
+  - Navigation flow implemented
+  - Local persistence added
+  - Program model and reusable structure introduced
+
+  Week 3:
+  - Mock API / JSON-style program data integrated
+  - Loading states and error handling implemented
+  - Feedback and registration forms added
+  - Dark theme refined
+
+  Week 4:
+  - Excelerate branding unified across the app
+  - Splash screen added
+  - UI/UX polished for final submission
+  - README refined for GitHub presentation
+
+## Reflection Note
+  This project provided a complete learning journey through Flutter app development, beginning with planning and wireframing, then progressing into navigation, persistence, mock data integration, forms, loading states, and UI refinement.
+
+  Through this process, important skills were strengthened in screen design, state management, debugging, user input validation, and structuring an app for future scalability. One of the most valuable lessons was understanding how to move from a static prototype toward a more realistic, interactive product by introducing dynamic data handling and user feedback systems.
+
+  The internship experience also highlighted the importance of polishing presentation quality, documentation, and project structure, not only building functionality. This helped develop a more professional mindset toward app development and portfolio preparation.
+
+## Future Recommendations
+  - Integrate a real backend API for live program and announcement data.
+  - Add secure authentication for production use.
+  - Introduce admin-facing controls for program and announcement management.
+  - Add push notifications and richer learner progress tracking.
+  - Expand accessibility and device responsiveness testing.
+
+## Repository Notes
+  Before pushing the final version:
+  - Verify screenshots are up to date.
+  - Use meaningful commit messages.
+  - Confirm that all Week 4 UI refinements are saved in the final codebase.

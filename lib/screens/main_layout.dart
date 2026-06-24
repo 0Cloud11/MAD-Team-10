@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'feedback_screen.dart';
 import 'home_screen.dart';
 import 'profile_screen.dart';
 import 'program_listing_screen.dart';
-import 'feedback_screen.dart';
 
 class MainLayout extends StatefulWidget {
   final int initialIndex;
@@ -31,18 +31,10 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-    final secondary = Theme.of(
-      context,
-    ).bottomNavigationBarTheme.backgroundColor;
-
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        backgroundColor: secondary,
-        selectedItemColor: primary,
-        unselectedItemColor: const Color(0xFFB6B1C8),
         onTap: (index) {
           setState(() {
             _currentIndex = index;

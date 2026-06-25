@@ -306,3 +306,6 @@ Before pushing the final version:
 - Verify screenshots are up to date.
 - Use meaningful commit messages.
 - Confirm that all Week 4 UI refinements are saved in the final codebase.
+
+# Contributors
+- Renit
